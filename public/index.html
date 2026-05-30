@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkFlow — AI-Powered Task & Accountability Platform</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Unified Stylesheet -->
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+  <!-- Root Application Shell -->
+  <div id="app" class="dashboard-shell hidden">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <div class="logo-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="logo-text">Work<span>Flow</span></div>
+        <span class="logo-badge">Enterprise AI</span>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Live Alert Overdue Badge -->
+        <div class="alert-bell-container" id="overdueAlertBtn" title="Overdue Tasks Alert">
+          <i class="fa-solid fa-bell bell-icon"></i>
+          <span class="alert-count" id="overdueCountBadge">0</span>
+        </div>
+
+        <!-- Mode Toggle Indicator -->
+        <div class="role-badge" id="roleBadge">Employee Mode</div>
+
+        <!-- User Profile Dropdown -->
+        <div class="user-profile-menu" id="profileDropdownBtn">
+          <img src="" alt="User Avatar" class="header-avatar" id="headerUserAvatar">
+          <span class="header-username" id="headerUsername">Loading...</span>
+          <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+          
+          <div class="profile-dropdown-content" id="profileDropdown">
+            <div class="dropdown-header">
+              <p class="dropdown-name" id="dropdownUserName">Loading...</p>
+              <p class="dropdown-role" id="dropdownUserRole">Employee</p>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="switchUserBtn"><i class="fa-solid fa-user-gear"></i> Switch User Profile</a>
+            <a href="#" id="openSettingsBtn"><i class="fa-solid fa-sliders"></i> AI Engine Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logoutBtn" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-layout-container">
+      
+      <!-- Side Navigation Panel -->
+      <aside class="sidebar-panel">
+        <div class="org" style="display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:10px;border:1px solid var(--border-color);margin-bottom:14px;cursor:pointer;">
+          <span class="glyph" style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#6f6bdc,#4B47C4);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">W</span>
+          <span class="meta" style="line-height:1.15; font-size:13px; color: var(--text-main)"><b>WorkFlow Ops</b><br><span id="planLine" style="font-size:11px;color:var(--text-muted)">Operations · Pro plan</span></span>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <a href="#" class="nav-item active" data-tab="dashboard">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+          </a>
+          <a href="#" class="nav-item" data-tab="tasks">
+            <i class="fa-solid fa-list-check"></i> Tasks Hub
+          </a>
+          <a href="#" class="nav-item" data-tab="timeline">
+            <i class="fa-solid fa-clock-rotate-left"></i> System Audit Trail
+          </a>
+          <a href="#" class="nav-item" data-tab="analytics" id="navAnalytics">
+            <i class="fa-solid fa-chart-simple"></i> Analytics
+          </a>
+          <a href="#" class="nav-item" data-tab="style" id="navStyle">
+            <i class="fa-solid fa-palette"></i> Style Guide
+          </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+          <div class="footer-card">
+            <div class="ai-pulse"></div>
+            <p class="footer-card-title">Gemini Verification</p>
+            <p class="footer-card-desc" id="aiStatusText">Running in Local Mock Mode</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Activity Panel -->
+      <main class="main-content-panel">
+        
+        <!-- ==================== MANAGER DASHBOARD TAB ==================== -->
+        <section id="managerDashboardView" class="tab-view hidden">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Operations Console</h1>
+              <p class="view-subtitle">Real-time task tracking, automated accountability audits, and employee progress insights.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-secondary" id="staleScanBtn">
+                <i class="fa-solid fa-radar"></i> Scan Stale Tasks
+              </button>
+              <button class="btn btn-ai" id="wheresMyTeamBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> "Where's My Team?" AI Briefing
+              </button>
+              <button class="btn btn-primary" id="openCreateTaskBtn">
+                <i class="fa-solid fa-plus"></i> Assign New Task
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Overview Cards -->
+          <div class="stats-overview-grid">
+            <div class="stat-card">
+              <div class="stat-icon bg-indigo"><i class="fa-solid fa-cubes"></i></div>
+              <div class="stat-data">
+                <span class="stat-number" id="mStatTotalTasks">0</span>
+                <span class="stat-label">Total Task Enrollments</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-emerald"><i class="fa-solid fa-circle-check"></i></div>
+              <div class="stat-data">
+                <span class="stat-number" id="mStatCompletedTasks">0</span>
+                <span class="stat-label">Verified Completed</span>
+              </div>
+            </div>
+            <div class="stat-card state-alert" id="mStatOverdueCard">
+              <div class="stat-icon bg-rose"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="stat-data">
+                <span class="stat-number" id="mStatOverdueTasks">0</span>
+                <span class="stat-label">Slipping/Overdue Deadlines</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-amber"><i class="fa-solid fa-user-shield"></i></div>
+              <div class="stat-data">
+                <span class="stat-number" id="mStatFlaggedLogs">0</span>
+                <span class="stat-label">AI Flagged Bluff Logs</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Task Management Grid / Table -->
+          <div class="dashboard-content-layout">
+            <div class="table-container-card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-list-ul"></i> Workload & Task Tracker</h3>
+                <div class="card-filters">
+                  <div class="search-input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="mSearchTask" placeholder="Search tasks or assignees...">
+                  </div>
+                  <select id="mFilterPriority" class="filter-select">
+                    <option value="All">All Priorities</option>
+                    <option value="High">High Priority</option>
+                    <option value="Medium">Medium Priority</option>
+                    <option value="Low">Low Priority</option>
+                  </select>
+                  <select id="mFilterStatus" class="filter-select">
+                    <option value="All">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In-Progress">In-Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Overdue">Overdue</option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table class="data-table" id="managerTasksTable">
+                  <thead>
+                    <tr>
+                      <th>Task Title</th>
+                      <th>Assignee</th>
+                      <th>Priority</th>
+                      <th>Deadline</th>
+                      <th>Status</th>
+                      <th class="text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Injected Dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== EMPLOYEE DASHBOARD TAB ==================== -->
+        <section id="employeeDashboardView" class="tab-view hidden">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title" id="empGreeting">Welcome Back, Employee</h1>
+              <p class="view-subtitle">Your active project responsibilities, target priorities, and daily logs submission engine.</p>
+            </div>
+          </div>
+
+          <!-- Quick Stats Grid -->
+          <div class="stats-overview-grid employee-stats">
+            <div class="stat-card">
+              <div class="stat-icon bg-indigo"><i class="fa-solid fa-thumbtack"></i></div>
+              <div class="stat-data">
+                <span class="stat-number" id="eStatMyTasks">0</span>
+                <span class="stat-label">Total Assigned Tasks</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-amber"><i class="fa-solid fa-spinner"></i></div>
+              <div class="stat-data">
+                <span class="stat-number" id="eStatActiveTasks">0</span>
+                <span class="stat-label">Active In-Progress</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-emerald"><i class="fa-solid fa-award"></i></div>
+              <div class="stat-data">
+                <span class="stat-number" id="eStatGenuineLogs">0</span>
+                <span class="stat-label">AI-Verified Logs</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employee Focus Task Area -->
+          <div class="dashboard-content-layout">
+            <div class="table-container-card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-briefcase"></i> My Current Board</h3>
+                <div class="card-filters">
+                  <select id="eFilterStatus" class="filter-select">
+                    <option value="All">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In-Progress">In-Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Overdue">Overdue</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="task-grid-layout" id="employeeTaskCardsContainer">
+                <!-- Cards injected dynamically -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== TASKS HUB TAB (UNIVERSAL LIST VIEW) ==================== -->
+        <section id="tasksHubView" class="tab-view hidden">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Company Tasks Hub</h1>
+              <p class="view-subtitle">A centralized read-only view of all active deliverables inside the enterprise.</p>
+            </div>
+          </div>
+          <div class="table-container-card">
+            <div class="table-wrapper">
+              <table class="data-table" id="universalTasksTable">
+                <thead>
+                  <tr>
+                    <th>Task Title</th>
+                    <th>Assignee</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Assigned By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Injected Dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== SYSTEM AUDIT TRAIL TAB ==================== -->
+        <section id="timelineView" class="tab-view hidden">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Immutable Audit Trail</h1>
+              <p class="view-subtitle">System-wide, tamper-resistant register recording all status changes, logins, and log audits.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-container-card">
+            <div class="timeline-header">
+              <h3 class="timeline-card-title"><i class="fa-solid fa-shield-halved"></i> Global Activity Register</h3>
+              <div class="timeline-filters">
+                <button class="btn btn-secondary btn-sm" id="refreshAuditBtn"><i class="fa-solid fa-rotate"></i> Refresh Audit Log</button>
+              </div>
+            </div>
+            
+            <div class="timeline-feed-layout" id="timelineFeedContainer">
+              <!-- Timeline nodes injected dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== ANALYTICS VIEW ==================== -->
+        <section id="analyticsView" class="tab-view hidden">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Analytics</h1>
+              <p class="view-subtitle">Last 6 weeks · Operations team productivity and workload distribution.</p>
+            </div>
+          </div>
+          
+          <div class="stats-overview-grid">
+            <div class="stat-card">
+              <div class="stat-icon bg-indigo"><i class="fa-solid fa-chart-line"></i></div>
+              <div class="stat-data">
+                <span class="stat-number">82%</span>
+                <span class="stat-label">Completion Rate (+6%)</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-emerald"><i class="fa-solid fa-truck-ramp-box"></i></div>
+              <div class="stat-data">
+                <span class="stat-number">74%</span>
+                <span class="stat-label">On-time Delivery (-3%)</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-indigo"><i class="fa-solid fa-stopwatch"></i></div>
+              <div class="stat-data">
+                <span class="stat-number">3.2d</span>
+                <span class="stat-label">Avg. Cycle Time</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-rose"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="stat-data">
+                <span class="stat-number">7%</span>
+                <span class="stat-label">Bluff Rate (AI flagged)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid cols-2" style="grid-template-columns:1.4fr 1fr; margin-bottom:16px; display: grid; gap: 16px;">
+            <div class="card">
+              <div class="ch">
+                <h3>Tasks completed per week</h3>
+                <span class="sub">on-time vs late</span>
+              </div>
+              <div class="cb">
+                <div class="barchart">
+                  <div class="col">
+                    <div class="stack" style="height: 80%">
+                      <div class="seg2" style="height: 15%; background: var(--color-warning)"></div>
+                      <div class="seg2" style="height: 85%; background: var(--color-primary)"></div>
+                    </div>
+                    <span class="lbl">W1</span>
+                  </div>
+                  <div class="col">
+                    <div class="stack" style="height: 90%">
+                      <div class="seg2" style="height: 11%; background: var(--color-warning)"></div>
+                      <div class="seg2" style="height: 89%; background: var(--color-primary)"></div>
+                    </div>
+                    <span class="lbl">W2</span>
+                  </div>
+                  <div class="col">
+                    <div class="stack" style="height: 75%">
+                      <div class="seg2" style="height: 30%; background: var(--color-warning)"></div>
+                      <div class="seg2" style="height: 70%; background: var(--color-primary)"></div>
+                    </div>
+                    <span class="lbl">W3</span>
+                  </div>
+                  <div class="col">
+                    <div class="stack" style="height: 95%">
+                      <div class="seg2" style="height: 10%; background: var(--color-warning)"></div>
+                      <div class="seg2" style="height: 90%; background: var(--color-primary)"></div>
+                    </div>
+                    <span class="lbl">W4</span>
+                  </div>
+                  <div class="col">
+                    <div class="stack" style="height: 85%">
+                      <div class="seg2" style="height: 20%; background: var(--color-warning)"></div>
+                      <div class="seg2" style="height: 80%; background: var(--color-primary)"></div>
+                    </div>
+                    <span class="lbl">W5</span>
+                  </div>
+                  <div class="col">
+                    <div class="stack" style="height: 100%">
+                      <div class="seg2" style="height: 5%; background: var(--color-warning)"></div>
+                      <div class="seg2" style="height: 95%; background: var(--color-primary)"></div>
+                    </div>
+                    <span class="lbl">W6</span>
+                  </div>
+                </div>
+                <div class="legend" style="margin-top: 10px; display: flex; gap: 16px;">
+                  <span><i style="background:var(--color-primary)"></i>On time</span>
+                  <span><i style="background:var(--color-warning)"></i>Late</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="ch">
+                <h3>Workload distribution</h3>
+                <span class="sub">active tasks per person</span>
+              </div>
+              <div class="cb" id="workloadDistributionContainer">
+                <!-- Dynamically populated from JS -->
+              </div>
+            </div>
+          </div>
+
+          <div class="card ai-card" style="margin-top: 16px;">
+            <div class="ai-head">
+              <span class="spark"><i class="fa-solid fa-sparkles"></i></span>
+              <b>AI Productivity Bottleneck Insight</b>
+              <span class="tag">advisory</span>
+            </div>
+            <div class="cb" style="font-size:13.5px;color:var(--text-muted); padding: 16px;">
+              <p style="margin:0 0 8px"><b>Recurring bottleneck detected:</b> 4 of the last 6 late tasks were blocked waiting on external partner data. Consider establishing clear standing handoff parameters.</p>
+              <p style="margin:0"><b>Workload imbalance:</b> John Doe is carrying ~35% more active tasks than the team average while two members are under-utilized — rebalancing tasks could lift the overall on-time delivery rate.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== STYLE GUIDE VIEW ==================== -->
+        <section id="styleView" class="tab-view hidden">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Style Guide</h1>
+              <p class="view-subtitle">The living design system — refined enterprise minimalism.</p>
+            </div>
+          </div>
+          
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="ch">
+              <h3>Design Principles</h3>
+            </div>
+            <div class="cb" style="padding: 16px; line-height: 1.6; color: var(--text-muted);">
+              <p>WorkFlow follows an enterprise design philosophy inspired by Notion, Stripe, and Linear. The user interface prioritizes clarity, whitespace, high contrast, and accessible status labels that do not rely on color alone.</p>
+            </div>
+          </div>
+
+          <div class="sg-sect" style="margin-bottom: 24px;">
+            <h2 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:600;margin:0 0 12px">Surfaces & accent</h2>
+            <div class="grid cols-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+              <div class="swatch" style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: #fff;">
+                <div class="chip2" style="height:62px; background:var(--bg-core); border-bottom:1px solid var(--border-color)"></div>
+                <div class="meta" style="padding:9px 11px"><b>App background</b><code>--bg-core (#F8FAFC)</code></div>
+              </div>
+              <div class="swatch" style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: #fff;">
+                <div class="chip2" style="height:62px; background:var(--bg-card); border-bottom:1px solid var(--border-color)"></div>
+                <div class="meta" style="padding:9px 11px"><b>Surface / Card</b><code>--bg-card (#FFFFFF)</code></div>
+              </div>
+              <div class="swatch" style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: #fff;">
+                <div class="chip2" style="height:62px; background:var(--color-primary); border-bottom:1px solid var(--border-color)"></div>
+                <div class="meta" style="padding:9px 11px"><b>Accent / Blue</b><code>--color-primary (#2563EB)</code></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== DOCK LOGIN / USER SELECT DIALOG ==================== -->
+  <div id="loginScreen" class="login-wrapper">
+    <div class="login-card glass-card">
+      <div class="login-header">
+        <div class="login-logo-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <h2 class="login-title">Work<span>Flow</span></h2>
+        <p class="login-subtitle">Enter credentials or select a demonstration profile to enter the accountability workspace.</p>
+      </div>
+
+      <div id="loginError" class="login-error-box hidden">
+        <i class="fa-solid fa-circle-exclamation"></i> <span id="loginErrorText">Invalid Profile</span>
+      </div>
+
+      <!-- Quick Select Profiles -->
+      <div class="quick-profiles-header">Select Evaluation Profile:</div>
+      <div class="quick-profiles-grid">
+        <div class="profile-select-card" data-email="sarah@workflow.ai">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150" alt="Sarah">
+          <div class="profile-info">
+            <div class="profile-name">Sarah Connor</div>
+            <div class="profile-role">Manager / Admin</div>
+          </div>
+        </div>
+        <div class="profile-select-card" data-email="john@workflow.ai">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="John">
+          <div class="profile-info">
+            <div class="profile-name">John Doe</div>
+            <div class="profile-role">Backend Engineer</div>
+          </div>
+        </div>
+        <div class="profile-select-card" data-email="ripley@workflow.ai">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Ellen">
+          <div class="profile-info">
+            <div class="profile-name">Ellen Ripley</div>
+            <div class="profile-role">Security Architect</div>
+          </div>
+        </div>
+        <div class="profile-select-card" data-email="marcus@workflow.ai">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" alt="Marcus">
+          <div class="profile-info">
+            <div class="profile-name">Marcus Wright</div>
+            <div class="profile-role">UI Developer</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-divider"><span>OR SIGN IN WITH EMAIL</span></div>
+
+      <!-- Email Login Form -->
+      <form id="emailLoginForm" class="login-form">
+        <div class="input-group">
+          <label for="loginEmail">Email Address</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="loginEmail" placeholder="e.g. john@workflow.ai" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Enter Portal</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODALS & DRAWER DIALOGS ==================== -->
+
+  <!-- 1. CREATE TASK MODAL (MANAGER ONLY) -->
+  <div id="createTaskModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-circle-plus"></i> Create & Assign Task</h3>
+        <button class="close-modal-btn" id="closeCreateTaskBtn">&times;</button>
+      </div>
+      <form id="createTaskForm">
+        <div class="input-group">
+          <label for="taskTitle">Task Name / Title</label>
+          <input type="text" id="taskTitle" placeholder="e.g. Migrate Postgres DB to AWS" required>
+        </div>
+        <div class="input-group">
+          <div class="label-with-action">
+            <label for="taskDescription">Technical Description / Scope</label>
+            <button type="button" class="btn-text-action" id="aiSuggestTaskBtn" title="Automatically assess description to prefill priority/deadlines">
+              <i class="fa-solid fa-sparkles"></i> AI Suggest Priority & Deadline
+            </button>
+          </div>
+          <textarea id="taskDescription" rows="4" placeholder="Detail tech requirements, validation requirements, and expected verification criteria..." required></textarea>
+        </div>
+        <div class="form-row-2">
+          <div class="input-group">
+            <label for="taskAssignee">Assign Technical Lead</label>
+            <select id="taskAssignee" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="taskPriority">Priority Level</label>
+            <select id="taskPriority" required>
+              <option value="Low">Low Priority</option>
+              <option value="Medium">Medium Priority</option>
+              <option value="High">High Priority</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="taskDeadline">Target Completion Deadline</label>
+          <input type="datetime-local" id="taskDeadline" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancelCreateTaskBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create and Assign</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- 2. SUBMIT DAILY WORK LOG MODAL (EMPLOYEE ONLY) -->
+  <div id="submitLogModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card modal-large">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-nib"></i> Log Daily Progress & Proof of Work</h3>
+        <button class="close-modal-btn" id="closeSubmitLogBtn">&times;</button>
+      </div>
+      <div class="task-context-banner" id="logTaskBanner">
+        <h4 id="logTaskTitle">Task Title</h4>
+        <p id="logTaskDesc">Task description goes here.</p>
+      </div>
+
+      <form id="submitLogForm">
+        <input type="hidden" id="logTaskId">
+        
+        <div class="input-group">
+          <div class="label-with-action">
+            <label for="logRoughNotes">Rough Developer Notes (Short points / bullets)</label>
+            <button type="button" class="btn btn-ai btn-sm" id="aiPolishLogBtn">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Polish Notes into Technical Log
+            </button>
+          </div>
+          <textarea id="logRoughNotes" rows="3" placeholder="e.g. database setup on aws complete, ran seed tables, connect pooling handles connection limits, verified via pg-admin."></textarea>
+        </div>
+
+        <div class="input-group">
+          <label for="logFinalText">Final Work Log Submission (Audited by AI)</label>
+          <textarea id="logFinalText" rows="5" placeholder="Detailed technical logs documenting what database/code items were created/migrated, verification tools used, and direct support for completion..." required></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancelSubmitLogBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitLogBtnReal">
+            Submit Log for AI Review
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- 3. AI WORK-LOG ASSESSMENT VERIFICATION MODAL -->
+  <div id="aiAssessmentModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card modal-medium">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-shield-check"></i> AI Work Audit Report</h3>
+        <button class="close-modal-btn" id="closeAiAssessmentBtn">&times;</button>
+      </div>
+      
+      <div class="assessment-card" id="assessmentCard">
+        <div class="assessment-badge-container">
+          <span class="assessment-badge" id="aiResultBadge">GENUINE</span>
+          <span class="assessment-score" id="aiResultScore">95%</span>
+        </div>
+        
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="aiResultBar"></div>
+        </div>
+
+        <div class="assessment-section">
+          <h4 class="section-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Audit Reasoning</h4>
+          <p class="section-text" id="aiResultReason">Reasoning text goes here...</p>
+        </div>
+
+        <div class="assessment-alert" id="assessmentNotification">
+          <i class="fa-solid fa-circle-check"></i> This log has been approved as genuine. Task is automatically marked completed!
+        </div>
+      </div>
+
+      <div class="modal-actions text-center">
+        <button class="btn btn-primary" id="confirmAiAssessmentBtn">Acknowledge Audit</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 4. "WHERE'S MY TEAM?" AI MANAGER BRIEFING MODAL -->
+  <div id="wheresMyTeamModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card modal-large">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> AI Team Accountability & Operational Briefing</h3>
+        <button class="close-modal-btn" id="closeWheresMyTeamBtn">&times;</button>
+      </div>
+      
+      <!-- Briefing Body -->
+      <div class="briefing-container markdown-body" id="teamBriefingBody">
+        <!-- Rendered Plain-English Markdown Injected Here -->
+        <div class="loading-state">
+          <i class="fa-solid fa-spinner fa-spin loading-spinner"></i>
+          <p>Gemini AI is analyzing active task lists, deadlines, and logs...</p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="printBriefingBtn"><i class="fa-solid fa-print"></i> Copy / Print</button>
+        <button class="btn btn-primary" id="confirmWheresMyTeamBtn">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 5. TASK DETAIL & AUDIT TIMELINE DRAW PANEL -->
+  <div id="taskDetailDrawer" class="modal-overlay hidden">
+    <div class="modal-content glass-card drawer-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-info-circle"></i> Task Dossier & Audit Timeline</h3>
+        <button class="close-modal-btn" id="closeTaskDetailBtn">&times;</button>
+      </div>
+      
+      <div class="drawer-body" id="drawerBody">
+        <div class="dossier-card">
+          <h2 id="dossierTitle" class="dossier-title">Task Title</h2>
+          <div class="dossier-meta-grid">
+            <div><strong>Assignee:</strong> <span id="dossierAssignee">Loading</span></div>
+            <div><strong>Priority:</strong> <span id="dossierPriority" class="badge">Medium</span></div>
+            <div><strong>Status:</strong> <span id="dossierStatus" class="badge">In-Progress</span></div>
+            <div><strong>Deadline:</strong> <span id="dossierDeadline">Loading</span></div>
+          </div>
+          <p id="dossierDesc" class="dossier-desc">Task description goes here.</p>
+        </div>
+
+        <div class="dossier-section-header"><i class="fa-solid fa-clock-rotate-left"></i> Task Audit History</div>
+        <div class="timeline-nodes-wrapper" id="dossierTimelineNodes">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 6. SETTINGS & API CONFIGURATION DIALOG -->
+  <div id="settingsModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card modal-medium">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-sliders"></i> AI Verification Settings</h3>
+        <button class="close-modal-btn" id="closeSettingsBtnReal">&times;</button>
+      </div>
+      
+      <div class="settings-body">
+        <p class="settings-intro">WorkFlow is equipped with an advanced dual-engine AI system. Enable live Google Gemini LLM reasoning for industrial-grade task audit logs.</p>
+        
+        <div class="input-group">
+          <label for="geminiApiKey">Google Gemini API Key</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-key"></i>
+            <input type="password" id="geminiApiKey" placeholder="Enter AIzaSy... API Key">
+          </div>
+          <span class="input-help">The API key is saved locally in your browser. All AI modules (Polishing, Verification, Briefings) will route through Google's Gemini-1.5-Flash model. If left empty, local high-fidelity rules run.</span>
+        </div>
+
+        <div class="api-key-test-status hidden" id="apiKeyStatusBox">
+          <i class="fa-solid fa-circle-check text-success"></i> Gemini Live Integration Active!
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="clearSettingsBtn">Clear Key</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">Save Configuration</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 7. STALE TASKS MODAL -->
+  <div id="staleTasksModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card modal-medium">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-radar animate-pulse"></i> Stale Task Audit Results</h3>
+        <button class="close-modal-btn" id="closeStaleTasksBtn">&times;</button>
+      </div>
+      
+      <div class="stale-tasks-body" id="staleTasksContainer">
+        <!-- Injected dynamically -->
+      </div>
+
+      <div class="modal-actions text-center">
+        <button class="btn btn-primary" id="confirmStaleTasksBtn">Acknowledge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Main Application Controller -->
+  <script src="/app.js"></script>
+</body>
+</html>

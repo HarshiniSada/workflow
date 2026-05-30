@@ -1,0 +1,180 @@
+{
+  "users": [
+    {
+      "id": "u_1",
+      "name": "Sarah Connor",
+      "email": "sarah@workflow.ai",
+      "role": "manager",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80"
+    },
+    {
+      "id": "u_2",
+      "name": "John Doe",
+      "email": "john@workflow.ai",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+    },
+    {
+      "id": "u_3",
+      "name": "Ellen Ripley",
+      "email": "ripley@workflow.ai",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+    },
+    {
+      "id": "u_4",
+      "name": "Marcus Wright",
+      "email": "marcus@workflow.ai",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t_1",
+      "title": "Migrate database to AWS PostgreSQL",
+      "description": "Deploy a multi-AZ RDS PostgreSQL database instance on AWS. Perform schema migration, PG dump of local DB, import into RDS, update server database configuration, and verify pool connectivity.",
+      "assignedTo": "u_2",
+      "priority": "High",
+      "status": "In-Progress",
+      "deadline": "2026-06-03T18:30:00.000Z",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-29T09:00:00.000Z"
+    },
+    {
+      "id": "t_2",
+      "title": "Create User Authentication flow",
+      "description": "Implement token-based user authentication. Build login and sign-up API endpoints, database storage for session tokens, password hashing using bcrypt, and route authorization middleware.",
+      "assignedTo": "u_3",
+      "priority": "Medium",
+      "status": "Completed",
+      "deadline": "2026-05-29T17:00:00.000Z",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-28T09:00:00.000Z"
+    },
+    {
+      "id": "t_3",
+      "title": "Refactor React state to Context API",
+      "description": "Clean up prop-drilling in the task dashboard. Refactor state management using React Context API or Zustand to centralize user session and notification states.",
+      "assignedTo": "u_4",
+      "priority": "Low",
+      "status": "In-Progress",
+      "deadline": "2026-06-08T12:00:00.000Z",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-30T08:30:00.000Z"
+    },
+    {
+      "id": "t_4",
+      "title": "Fix memory leak in web socket gateway",
+      "description": "Investigate heap usage spike during socket reconnections. Ensure socket event listeners are properly removed on disconnect, and optimize message buffer queue length.",
+      "assignedTo": "u_2",
+      "priority": "High",
+      "status": "Overdue",
+      "deadline": "2026-05-29T10:00:00.000Z",
+      "createdBy": "u_1",
+      "createdAt": "2026-05-27T09:00:00.000Z"
+    }
+  ],
+  "work_logs": [
+    {
+      "id": "w_1",
+      "taskId": "t_2",
+      "userId": "u_3",
+      "logText": "Successfully completed user auth flow. Created POST /api/auth/login and POST /api/auth/register. Hashed passwords using bcrypt (10 rounds) and generated custom session tokens stored in standard headers. Verified endpoints using Postman.",
+      "rawNotes": "auth flow is fully done, endpoints registered, hashed passwords, verified everything.",
+      "aiVerification": {
+        "status": "GENUINE",
+        "confidenceScore": 96,
+        "reasoning": "Highly specific entry outlining exact API routes developed, security methods used (bcrypt 10 rounds), and evidence of verification (Postman testing)."
+      },
+      "createdAt": "2026-05-29T16:45:00.000Z"
+    },
+    {
+      "id": "w_2",
+      "taskId": "t_4",
+      "userId": "u_2",
+      "logText": "Checked some files. Web socket connection looks fine. Will check more tomorrow.",
+      "rawNotes": "looked at socket files, seems okay",
+      "aiVerification": {
+        "status": "FLAGGED",
+        "confidenceScore": 30,
+        "reasoning": "Vague entry with low effort. Does not describe actual investigative steps for a memory leak. No mention of heap analysis, memory profiling, or event listeners."
+      },
+      "createdAt": "2026-05-29T18:00:00.000Z"
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": "a_1",
+      "taskId": "t_2",
+      "userId": "u_1",
+      "action": "TASK_CREATED",
+      "details": "Sarah Connor created task 'Create User Authentication flow' and assigned it to Ellen Ripley.",
+      "timestamp": "2026-05-28T09:00:00.000Z"
+    },
+    {
+      "id": "a_2",
+      "taskId": "t_2",
+      "userId": "u_3",
+      "action": "STATUS_CHANGED",
+      "details": "Ellen Ripley updated status to 'In-Progress'.",
+      "timestamp": "2026-05-28T10:15:00.000Z"
+    },
+    {
+      "id": "a_3",
+      "taskId": "t_2",
+      "userId": "u_3",
+      "action": "LOG_SUBMITTED",
+      "details": "Ellen Ripley submitted daily work log: 'Successfully completed user auth flow. Created POST /api/auth/login and...' AI rated GENUINE.",
+      "timestamp": "2026-05-29T16:45:00.000Z"
+    },
+    {
+      "id": "a_4",
+      "taskId": "t_2",
+      "userId": "u_3",
+      "action": "STATUS_CHANGED",
+      "details": "Ellen Ripley marked task completed.",
+      "timestamp": "2026-05-29T16:45:10.000Z"
+    },
+    {
+      "id": "a_5",
+      "taskId": "t_4",
+      "userId": "u_1",
+      "action": "TASK_CREATED",
+      "details": "Sarah Connor created task 'Fix memory leak in web socket gateway' and assigned it to John Doe.",
+      "timestamp": "2026-05-27T09:00:00.000Z"
+    },
+    {
+      "id": "a_6",
+      "taskId": "t_4",
+      "userId": "u_2",
+      "action": "STATUS_CHANGED",
+      "details": "John Doe updated status to 'In-Progress'.",
+      "timestamp": "2026-05-27T14:30:00.000Z"
+    },
+    {
+      "id": "a_7",
+      "taskId": "t_4",
+      "userId": "u_2",
+      "action": "LOG_SUBMITTED",
+      "details": "John Doe submitted daily work log: 'Checked some files. Web socket connection looks...' AI rated FLAGGED.",
+      "timestamp": "2026-05-29T18:00:00.000Z"
+    },
+    {
+      "id": "a_1780122566286_x47ic",
+      "taskId": "t_4",
+      "userId": "system",
+      "action": "OVERDUE_ALERT",
+      "details": "Task 'Fix memory leak in web socket gateway' went overdue. Deadline was 29/5/2026, 3:30:00 pm",
+      "timestamp": "2026-05-30T06:29:26.286Z"
+    },
+    {
+      "id": "a_1780125042653",
+      "taskId": "t_3",
+      "userId": "u_4",
+      "action": "STATUS_CHANGED",
+      "details": "Marcus Wright updated status from 'Pending' to 'In-Progress'.",
+      "timestamp": "2026-05-30T07:10:42.653Z"
+    }
+  ]
+}
