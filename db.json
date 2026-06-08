@@ -36,7 +36,7 @@
       "description": "Deploy a multi-AZ RDS PostgreSQL database instance on AWS. Perform schema migration, PG dump of local DB, import into RDS, update server database configuration, and verify pool connectivity.",
       "assignedTo": "u_2",
       "priority": "High",
-      "status": "In-Progress",
+      "status": "Overdue",
       "deadline": "2026-06-03T18:30:00.000Z",
       "createdBy": "u_1",
       "createdAt": "2026-05-29T09:00:00.000Z"
@@ -175,6 +175,14 @@
       "action": "STATUS_CHANGED",
       "details": "Marcus Wright updated status from 'Pending' to 'In-Progress'.",
       "timestamp": "2026-05-30T07:10:42.653Z"
+    },
+    {
+      "id": "a_1780899079646_iyqaj",
+      "taskId": "t_1",
+      "userId": "system",
+      "action": "OVERDUE_ALERT",
+      "details": "Task 'Migrate database to AWS PostgreSQL' went overdue. Deadline was 4/6/2026, 12:00:00 am",
+      "timestamp": "2026-06-08T06:11:19.646Z"
     }
   ]
 }

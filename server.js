@@ -589,7 +589,7 @@ app.get('/api/ai/stale-tasks', (req, res) => {
 });
 
 // Serve Frontend index.html for all SPA routes
-app.get('*', (req, res) => {
+app.get('/{*splat}', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
